@@ -6,7 +6,7 @@ export default class FavoritesPage {
       <section class="container">
         <h1>Cerita Favorit Saya</h1>
         <div style="display: flex; gap: 10px; margin-bottom: 20px;">
-          <a href="#/" class="back-btn">← Kembali</a>
+          <a href="/" class="back-btn">← Kembali</a>
           <button id="clear-all-btn" class="clear-btn" style="
             background: #ff4444;
             color: white;
@@ -36,7 +36,7 @@ export default class FavoritesPage {
         list.innerHTML = `
           <div style="text-align: center; padding: 40px;">
             <p style="font-size: 18px; color: #666;">Belum ada cerita favorit</p>
-            <a href="#/" style="
+            <a href="/" style="
               display: inline-block;
               margin-top: 20px;
               padding: 10px 20px;
@@ -52,10 +52,10 @@ export default class FavoritesPage {
 
       list.innerHTML = favorites.map(story => `
         <div class="story-item" data-id="${story.id}">
-          <a href="#/story/${story.id}">
+          <a href="/story/${story.id}">
             <img src="${story.photoUrl}" alt="${story.name || 'Story'}" style="width: 100px; height: 100px;">
           </a>
-          <h3><a href="#/story/${story.id}">${story.name || 'Untitled'}</a></h3>
+          <h3><a href="/story/${story.id}">${story.name || 'Untitled'}</a></h3>
           <p>${story.description}</p>
           <p>Created: ${new Date(story.createdAt).toLocaleDateString()}</p>
           <p style="font-size: 12px; color: #666;">Disimpan: ${new Date(story.savedAt).toLocaleDateString()}</p>

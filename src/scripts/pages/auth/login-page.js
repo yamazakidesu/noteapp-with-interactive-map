@@ -41,7 +41,7 @@ export default class LoginPage {
             <button type="submit">Login</button>
           </div>
         </form>
-        <p>Belum punya akun? <a href="#/register">Register</a></p>
+        <p>Belum punya akun? <a href="/register">Register</a></p>
       </section>
     `;
   }
@@ -81,7 +81,7 @@ export default class LoginPage {
           }
         }
         alert('Login successful!');
-        window.location.hash = '#/';
+        window.location.hash = '/';
       } catch (error) {
         alert('Login failed: ' + error.message);
       }

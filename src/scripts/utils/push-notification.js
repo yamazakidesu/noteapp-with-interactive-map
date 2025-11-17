@@ -5,6 +5,12 @@ class PushNotificationManager {
     this.registration = null;
   }
 
+  // ✅ METHOD BARU: Set registration dari VitePWA
+  setRegistration(registration) {
+    this.registration = registration;
+    console.log('✅ Service Worker registration set:', registration);
+  }
+
   async init() {
     if (!('serviceWorker' in navigator)) {
       console.log('Service Worker not supported');
@@ -17,17 +23,13 @@ class PushNotificationManager {
     }
 
     try {
-
-      console.log('Service Worker registered:', this.registration);
-      
-      // Tunggu sampai service worker ready
+      // Tunggu sampai service worker ready (sudah di-register oleh VitePWA)
       await navigator.serviceWorker.ready;
       console.log('Service Worker is ready');
       
       return true;
     } catch (error) {
-      console.error('Service Worker registration failed:', error);
-      // Jangan throw error, biar app tetap jalan
+      console.error('Service Worker initialization failed:', error);
       return false;
     }
   }
@@ -49,13 +51,21 @@ class PushNotificationManager {
       // Wait for service worker to be ready
       const registration = await navigator.serviceWorker.ready;
 
+      // ✅ CEK APAKAH SUDAH ADA SUBSCRIPTION
+      let subscription = await registration.pushManager.getSubscription();
+      
+      if (subscription) {
+        console.log('Already subscribed:', subscription);
+        return subscription;
+      }
+
       // Subscribe to push notifications
-      const subscription = await registration.pushManager.subscribe({
+      subscription = await registration.pushManager.subscribe({
         userVisibleOnly: true,
         applicationServerKey: this.urlBase64ToUint8Array(CONFIG.VAPID_PUBLIC_KEY)
       });
 
-      console.log('Push subscription:', subscription);
+      console.log('New push subscription:', subscription);
 
       // Send subscription to server
       await this.sendSubscriptionToServer(subscription);
@@ -63,7 +73,7 @@ class PushNotificationManager {
       return subscription;
     } catch (error) {
       console.error('Failed to subscribe to push notification:', error);
-      return null;
+      throw error; // ✅ Throw error agar bisa di-catch di tempat lain
     }
   }
 
@@ -71,7 +81,7 @@ class PushNotificationManager {
     const token = localStorage.getItem('token');
     
     if (!token) {
-      console.log('No token found, skipping subscription');
+      console.log('No token found, skipping subscription to server');
       return;
     }
 
@@ -86,13 +96,16 @@ class PushNotificationManager {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to send subscription to server');
+        const error = await response.json();
+        throw new Error(error.message || 'Failed to send subscription to server');
       }
 
       const data = await response.json();
-      console.log('Subscription sent to server:', data);
+      console.log('✅ Subscription sent to server:', data);
+      return data;
     } catch (error) {
-      console.error('Error sending subscription:', error);
+      console.error('❌ Error sending subscription:', error);
+      throw error;
     }
   }
 
@@ -119,9 +132,24 @@ class PushNotificationManager {
       if (subscription) {
         await subscription.unsubscribe();
         console.log('Unsubscribed from push notifications');
+        return true;
       }
+      return false;
     } catch (error) {
       console.error('Failed to unsubscribe:', error);
+      throw error;
+    }
+  }
+
+  // ✅ METHOD BARU: CEK STATUS SUBSCRIPTION
+  async isSubscribed() {
+    try {
+      const registration = await navigator.serviceWorker.ready;
+      const subscription = await registration.pushManager.getSubscription();
+      return subscription !== null;
+    } catch (error) {
+      console.error('Failed to check subscription status:', error);
+      return false;
     }
   }
 }

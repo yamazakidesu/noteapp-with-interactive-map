@@ -20,7 +20,7 @@ export default class RegisterPage {
           </div>
           <button type="submit">Register</button>
         </form>
-        <p>Sudah punya akun? <a href="#/login">Login</a></p>
+        <p>Sudah punya akun? <a href="/login">Login</a></p>
       </section>
     `;
   }
@@ -36,7 +36,7 @@ export default class RegisterPage {
       try {
         const result = await register({ name, email, password });
         alert('Registration successful! Please login.');
-        window.location.hash = '#/login';
+        window.location.hash = '/login';
       } catch (error) {
         alert('Registration failed: ' + error.message);
       }

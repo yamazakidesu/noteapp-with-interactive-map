@@ -12,8 +12,8 @@ export default class HomePage {
       <section class="container">
         <h1>Berbagi Cerita</h1>
         <div style="display: flex; gap: 10px; margin-bottom: 20px;">
-          <a href="#/add" class="add-btn">Tambah Cerita Baru</a>
-          <a href="#/favorites" class="favorites-btn">Cerita Favorit</a>
+          <a href="/add" class="add-btn">Tambah Cerita Baru</a>
+          <a href="/favorites" class="favorites-btn">Cerita Favorit</a>
         </div>
         <div id="loading" style="display: none;">Loading...</div>
         <div id="stories-list"></div>
@@ -106,10 +106,10 @@ export default class HomePage {
 
     list.innerHTML = storiesWithFavoriteStatus.map(story => `
       <div class="story-item" data-id="${story.id}">
-        <a href="#/story/${story.id}">
+        <a href="/story/${story.id}">
           <img src="${story.photoUrl}" alt="${story.name || 'Story'}" style="width: 100px; height: 100px;">
         </a>
-        <h3><a href="#/story/${story.id}">${story.name || 'Untitled'}</a></h3>
+        <h3><a href="/story/${story.id}">${story.name || 'Untitled'}</a></h3>
         <p>${story.description}</p>
         <p>Created: ${new Date(story.createdAt).toLocaleDateString()}</p>
         <button class="favorite-btn" data-id="${story.id}" style="
@@ -228,7 +228,7 @@ export default class HomePage {
     this.markers.forEach(marker => {
       marker.off('click');
       marker.on('click', () => {
-        window.location.hash = `#/story/${marker.id}`;
+        window.location.hash = `/story/${marker.id}`;
       });
     });
   }

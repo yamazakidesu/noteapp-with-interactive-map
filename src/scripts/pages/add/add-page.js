@@ -178,7 +178,7 @@ export default class AddPage {
         
         // ✨ TAMBAHAN: Navigasi ke home setelah 1 detik
         setTimeout(() => {
-          window.location.hash = '#/home';
+          window.location.hash = '/';
         }, 1000);
         
       } catch (error) {
